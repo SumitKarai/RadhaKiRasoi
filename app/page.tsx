@@ -3,11 +3,12 @@
 
 import { useState } from "react";
 import { menu } from "@/data/menu";
-
+import WhatsAppCheckout from "@/components/WhatsAppCheckout";
+import RestaurantInfo from "@/components/RestaurantInfo";
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [cart, setCart] = useState<Record<string, number>>({});
-
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const categories = [
   "All",
   ...Array.from(new Set(menu.map((item) => item.category))),
@@ -120,14 +121,14 @@ export default function Home() {
           </div>
 
           {/* Items in This Category */}
-          <div className="space-y-3">
+          <div className="rounded-2xl border-2 border-[#E9E1D2] shadow-sm">
             {categoryItems.map((item) => {
               const quantity = cart[item.id] || 0;
 
               return (
                 <article
                   key={item.id}
-                  className="flex items-center justify-between gap-3 rounded-2xl border border-[#E9E1D2] bg-white p-4 shadow-sm transition-shadow hover:shadow-md"
+                  className="flex items-center justify-between gap-3 p-4 transition-shadow hover:shadow-md"
                 >
                   <div className="min-w-0 flex-1">
                     <h4 className="font-semibold text-gray-900">
@@ -203,7 +204,7 @@ export default function Home() {
             </div>
 
             <button
-              onClick={() => alert("Next, we will add WhatsApp checkout!")}
+              onClick={() => setIsCheckoutOpen(true)}
               className="rounded-xl bg-[#163E36] px-6 py-3 font-semibold text-white"
             >
               View Order →
@@ -211,6 +212,14 @@ export default function Home() {
           </div>
         </div>
       )}
+      {isCheckoutOpen && (
+  <WhatsAppCheckout
+    cart={cart}
+    cartTotal={cartTotal}
+    onClose={() => setIsCheckoutOpen(false)}
+  />
+)}
+<RestaurantInfo />
     </main>
   );
 }
